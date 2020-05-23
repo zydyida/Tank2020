@@ -1,5 +1,4 @@
-import java.awt.*;
-import java.util.concurrent.TimeUnit;
+package com.zhuyida.tank;
 
 public class Main {
     public static void main(String[] args) {
