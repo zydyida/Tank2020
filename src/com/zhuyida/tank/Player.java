@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 
-public class Player {
+public class Player extends AbstractGameObject {
     private int x, y;
     private Dir dir;
     private boolean bL, bU, bR, bD;

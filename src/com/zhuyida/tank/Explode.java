@@ -2,7 +2,7 @@ package com.zhuyida.tank;
 
 import java.awt.*;
 
-public class Explode {
+public class Explode extends AbstractGameObject {
     private int x, y;
     private int width, height;
     private int step = 0;

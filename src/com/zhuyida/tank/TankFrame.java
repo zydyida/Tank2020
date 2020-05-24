@@ -12,9 +12,7 @@ public class TankFrame extends Frame {
 
     private Player myTank;
 
-    private List<Tank> tanks;
-    private List<Bullet> bullets;
-    private List<Explode> explodes;
+    List<AbstractGameObject> objects;
 
     public static final int FRAME_LOCATION_X = 0; //Integer.parseInt(PropertyMgr.get("FrameLocationX"));
     public static final int FRAME_LOCATION_Y = 0; //Integer.parseInt(PropertyMgr.get("FrameLocationY"));
@@ -29,29 +27,24 @@ public class TankFrame extends Frame {
         this.addKeyListener(new TankKeyListener());
 
         initGameObjects();
-
-    }
-
-    public void add(Explode explode) {
-        this.explodes.add(explode);
     }
 
     private void initGameObjects() {
         myTank = new Player(100, 100, Dir.R, Group.GOOD);
 
-        tanks = new ArrayList<>();
-        bullets = new ArrayList<>();
-        explodes = new ArrayList<>();
+        objects = new ArrayList<>();
 
         int tankCount = Integer.parseInt(PropertyMgr.get("initTankCount"));
 
         for (int i = 0; i < tankCount; i++) {
-            tanks.add(new Tank(100 + 50 * i, 200, Dir.D, Group.BAD));
+            this.add(new Tank(100 + 50 * i, 200, Dir.D, Group.BAD));
         }
+
+        this.add(new Wall(300, 200, 400, 50));
     }
 
-    public void add(Bullet bullet) {
-        this.bullets.add(bullet);
+    public void add(AbstractGameObject go) {
+        objects.add(go);
     }
 
 
@@ -59,13 +52,16 @@ public class TankFrame extends Frame {
     public void paint(Graphics g) {
         Color c = g.getColor();
         g.setColor(Color.WHITE);
-        g.drawString("bullets:" + bullets.size(), 10, 50);
+        /*g.drawString("bullets:" + bullets.size(), 10, 50);
         g.drawString("enemies:" + tanks.size(), 10, 70);
-        g.drawString("explodes:" + explodes.size(), 10, 90);
+        g.drawString("explodes:" + explodes.size(), 10, 90);*/
         g.setColor(c);
 
         myTank.paint(g);
-        for (int i = 0; i < tanks.size(); i++) {
+        for (int i=0; i<objects.size(); i++) {
+            objects.get(i).paint(g);
+        }
+        /*for (int i = 0; i < tanks.size(); i++) {
             if (!tanks.get(i).isLive()) {
                 tanks.remove(i);
             } else {
@@ -91,7 +87,7 @@ public class TankFrame extends Frame {
             } else {
                 explodes.get(i).paint(g);
             }
-        }
+        }*/
     }
 
     Image offScreenImage = null;
