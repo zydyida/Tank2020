@@ -1,7 +1,13 @@
 package com.zhuyida.tank;
 
+import com.zhuyida.tank.strategy.DefaultFireStrategy;
+import com.zhuyida.tank.strategy.FireStrategy;
+import com.zhuyida.tank.strategy.FourDirFireStrategy;
+import com.zhuyida.tank.strategy.LeftRightFireStrategy;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.InvocationTargetException;
 
 public class Player {
     private int x, y;
@@ -19,6 +25,9 @@ public class Player {
         this.y = y;
         this.dir = dir;
         this.group = group;
+
+        //init fire strategy from config file
+        this.initFireStrategy();
     }
 
     public int getX() {
@@ -37,6 +46,13 @@ public class Player {
         this.live = live;
     }
 
+    public Dir getDir() {
+        return dir;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
 
     public void paint(Graphics g) {
         if (!this.isLive()) return;
@@ -145,10 +161,20 @@ public class Player {
         setMainDir();
     }
 
+    private FireStrategy strategy = null;
+
+    public void initFireStrategy() {
+        String className = PropertyMgr.get("tankFireStrategy");
+        try {
+            Class clazz = Class.forName("com.zhuyida.tank.strategy." + className);
+            strategy = (FireStrategy)(clazz.getDeclaredConstructor().newInstance());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void fire() {
-        int bX = x + ResourceMgr.goodTankU.getWidth()/2 - ResourceMgr.bulletU.getWidth()/2;
-        int bY = y + ResourceMgr.goodTankU.getHeight()/2 - ResourceMgr.bulletU.getHeight()/2;
-        TankFrame.INSTANCE.add(new Bullet(bX, bY, dir, group));
+        strategy.fire(this);
     }
 
     public void die() {

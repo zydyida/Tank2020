@@ -129,6 +129,7 @@ public class Tank {
     private void fire() {
         int bX = x + ResourceMgr.goodTankU.getWidth() / 2 - ResourceMgr.bulletU.getWidth() / 2;
         int bY = y + ResourceMgr.goodTankU.getHeight() / 2 - ResourceMgr.bulletU.getHeight() / 2;
+
         TankFrame.INSTANCE.add(new Bullet(bX, bY, dir, group));
     }
 

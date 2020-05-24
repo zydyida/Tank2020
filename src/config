@@ -1,8 +1,8 @@
 # Tank Frame
 Title = Tank War
-FrameLocationX = 0
-FrameLocationY = 0
 FrameWidth = 800
 FrameHeight = 600
-
 initTankCount=10
+
+# tank fire strategy
+tankFireStrategy = LeftUpFireStrategy
