@@ -82,7 +82,7 @@ public class Bullet {
     }
 
     private void boundsCheck() {
-        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
+        if (x < 0 || y < 30 || x > TankFrame.FRAME_WIDTH || y > TankFrame.FRAME_HEIGHT) {
             live = false;
         }
     }

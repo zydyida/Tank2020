@@ -112,7 +112,7 @@ public class Tank {
     }
 
     private void boundsCheck() {
-        if (x < 0 || y < 30 || x + width > TankFrame.GAME_WIDTH || y + height > TankFrame.GAME_HEIGHT) {
+        if (x < 0 || y < 30 || x + width > TankFrame.FRAME_WIDTH || y + height > TankFrame.FRAME_HEIGHT) {
             this.back();
         }
     }

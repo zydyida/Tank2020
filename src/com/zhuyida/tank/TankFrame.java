@@ -8,7 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class TankFrame extends Frame {
-    public static final TankFrame INSTANCE = new TankFrame();
+    public static final TankFrame INSTANCE = new TankFrame(PropertyMgr.get("Title"));
 
     private Player myTank;
 
@@ -16,12 +16,15 @@ public class TankFrame extends Frame {
     private List<Bullet> bullets;
     private List<Explode> explodes;
 
-    public static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
+    public static final int FRAME_LOCATION_X = 0; //Integer.parseInt(PropertyMgr.get("FrameLocationX"));
+    public static final int FRAME_LOCATION_Y = 0; //Integer.parseInt(PropertyMgr.get("FrameLocationY"));
+    public static final int FRAME_WIDTH = 800; //Integer.parseInt(PropertyMgr.get("FrameWidth"));
+    public static final int FRAME_HEIGHT = 600; //Integer.parseInt(PropertyMgr.get("FrameHeight"));
 
-    private TankFrame () {
+    private TankFrame(String Title) {
         this.setTitle("tank war");
-        this.setLocation(400, 100);
-        this.setSize(GAME_WIDTH, GAME_HEIGHT);
+        this.setLocation(FRAME_LOCATION_X, FRAME_LOCATION_Y);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 
         this.addKeyListener(new TankKeyListener());
 
@@ -40,8 +43,10 @@ public class TankFrame extends Frame {
         bullets = new ArrayList<>();
         explodes = new ArrayList<>();
 
-        for (int i=0; i<10; i++) {
-            tanks.add(new Tank(100 + 50*i, 200, Dir.D, Group.BAD));
+        int tankCount = Integer.parseInt(PropertyMgr.get("initTankCount"));
+
+        for (int i = 0; i < tankCount; i++) {
+            tanks.add(new Tank(100 + 50 * i, 200, Dir.D, Group.BAD));
         }
     }
 
@@ -60,7 +65,7 @@ public class TankFrame extends Frame {
         g.setColor(c);
 
         myTank.paint(g);
-        for (int i=0; i<tanks.size(); i++) {
+        for (int i = 0; i < tanks.size(); i++) {
             if (!tanks.get(i).isLive()) {
                 tanks.remove(i);
             } else {
@@ -68,8 +73,8 @@ public class TankFrame extends Frame {
             }
         }
 
-        for (int i=0; i<bullets.size(); i++) {
-            for (int j=0; j<tanks.size(); j++) {
+        for (int i = 0; i < bullets.size(); i++) {
+            for (int j = 0; j < tanks.size(); j++) {
                 bullets.get(i).collidesWithTank(tanks.get(j));
             }
 
@@ -80,7 +85,7 @@ public class TankFrame extends Frame {
             }
         }
 
-        for (int i=0; i<explodes.size(); i++) {
+        for (int i = 0; i < explodes.size(); i++) {
             if (!explodes.get(i).isLive()) {
                 explodes.remove(i);
             } else {
@@ -94,12 +99,12 @@ public class TankFrame extends Frame {
     @Override
     public void update(Graphics g) {
         if (offScreenImage == null) {
-            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+            offScreenImage = this.createImage(FRAME_WIDTH, FRAME_HEIGHT);
         }
         Graphics gOffScreen = offScreenImage.getGraphics();
         Color c = gOffScreen.getColor();
         gOffScreen.setColor(Color.BLACK);
-        gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        gOffScreen.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
         gOffScreen.setColor(c);
         paint(gOffScreen); // paint the whole picture in memory
         g.drawImage(offScreenImage, 0, 0, null);
