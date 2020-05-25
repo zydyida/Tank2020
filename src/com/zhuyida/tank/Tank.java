@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.Random;
 
 public class Tank extends AbstractGameObject {
@@ -19,6 +20,7 @@ public class Tank extends AbstractGameObject {
     private int width, height;
 
     private int oldX, oldY;
+    private Rectangle rect;
 
     public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
@@ -31,6 +33,8 @@ public class Tank extends AbstractGameObject {
 
         this.width = ResourceMgr.goodTankU.getWidth();
         this.height = ResourceMgr.goodTankU.getHeight();
+
+        this.rect = new Rectangle(x, y, width, height);
     }
 
     public int getX() {
@@ -74,6 +78,11 @@ public class Tank extends AbstractGameObject {
         }
 
         move();
+
+        //update rect
+        rect.x = x;
+        rect.y = y;
+
         if (r.nextInt(100) > 90)
             fire();
     }
@@ -117,7 +126,7 @@ public class Tank extends AbstractGameObject {
         }
     }
 
-    private void back() {
+    public void back() {
         this.x = oldX;
         this.y = oldY;
     }
@@ -136,6 +145,10 @@ public class Tank extends AbstractGameObject {
     public void die() {
         this.setLive(false);
         TankFrame.INSTANCE.add(new Explode(x, y));
+    }
+
+    public Rectangle getRect() {
+        return rect;
     }
 }
 

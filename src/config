@@ -1,8 +1,9 @@
 # Tank Frame
-Title = Tank War
-FrameWidth = 800
-FrameHeight = 600
-initTankCount=10
+Title=Tank War
+FrameWidth=800
+FrameHeight=600
+initTankCount=5
 
 # tank fire strategy
-tankFireStrategy = LeftUpFireStrategy
+tankFireStrategy=FourDirFireStrategy
+colliders=BulletTankCollider,BulletWallCollider,TankWallCollider

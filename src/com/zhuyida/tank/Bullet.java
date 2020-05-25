@@ -1,6 +1,7 @@
 package com.zhuyida.tank;
 
 import java.awt.*;
+import java.awt.Rectangle;
 
 public class Bullet extends AbstractGameObject {
     public static final int SPEED = 6;
@@ -8,13 +9,18 @@ public class Bullet extends AbstractGameObject {
     private Dir dir;
     private Group group;
     private boolean live = true;
+    private int w = ResourceMgr.bulletU.getWidth();
+    private int h = ResourceMgr.bulletU.getHeight();
 
+    private Rectangle rect;
 
     public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
+
+        rect = new Rectangle(x, y, w, h);
     }
 
     public void setLive(boolean live) {
@@ -42,6 +48,14 @@ public class Bullet extends AbstractGameObject {
         }
         
         move();
+        //update the rect
+        rect.x = x;
+        rect.y = y;
+
+        /*Color old = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.drawRect(rect.x, rect.y, rect.width, rect.height);
+        g.setColor(old);*/
     }
 
     private void move() {
@@ -63,28 +77,36 @@ public class Bullet extends AbstractGameObject {
         boundsCheck();
     }
 
-    public void collidesWithTank(Tank tank) {
-        if (!tank.isLive() || !this.isLive()) return;
-        if (this.group == tank.getGroup()) return;
 
-        Rectangle rect = new Rectangle(x, y, ResourceMgr.bulletU.getWidth(), ResourceMgr.bulletU.getHeight());
-        Rectangle rectTank = new Rectangle(tank.getX(), tank.getY(),
-                ResourceMgr.goodTankU.getWidth(), ResourceMgr.goodTankU.getHeight());
-
-        if (rect.intersects(rectTank)) {
-            this.die();
-            tank.die();
-        }
+    public Rectangle getRect() {
+        return rect;
     }
 
-    private void die() {
+    public void die() {
         this.setLive(false);
     }
 
-    private void boundsCheck() {
+    public void boundsCheck() {
         if (x < 0 || y < 30 || x > TankFrame.FRAME_WIDTH || y > TankFrame.FRAME_HEIGHT) {
             live = false;
         }
     }
 
+    @Override
+    public String toString() {
+        return "Bullet{" +
+                "x=" + x +
+                ", y=" + y +
+                ", dir=" + dir +
+                ", group=" + group +
+                ", live=" + live +
+                ", w=" + w +
+                ", h=" + h +
+                ", rect=" + rect +
+                '}';
+    }
+
+    public Group getGroup() {
+        return group;
+    }
 }
