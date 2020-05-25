@@ -5,12 +5,13 @@ import java.awt.Rectangle;
 
 public class Bullet extends AbstractGameObject {
     public static final int SPEED = 6;
+    public static final int W = ResourceMgr.bulletU.getWidth();
+    public static final int H = ResourceMgr.bulletU.getHeight();
+
     private int x, y;
     private Dir dir;
     private Group group;
     private boolean live = true;
-    private int w = ResourceMgr.bulletU.getWidth();
-    private int h = ResourceMgr.bulletU.getHeight();
 
     private Rectangle rect;
 
@@ -20,7 +21,7 @@ public class Bullet extends AbstractGameObject {
         this.dir = dir;
         this.group = group;
 
-        rect = new Rectangle(x, y, w, h);
+        rect = new Rectangle(x, y, W, H);
     }
 
     public void setLive(boolean live) {
@@ -90,20 +91,6 @@ public class Bullet extends AbstractGameObject {
         if (x < 0 || y < 30 || x > TankFrame.FRAME_WIDTH || y > TankFrame.FRAME_HEIGHT) {
             live = false;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Bullet{" +
-                "x=" + x +
-                ", y=" + y +
-                ", dir=" + dir +
-                ", group=" + group +
-                ", live=" + live +
-                ", w=" + w +
-                ", h=" + h +
-                ", rect=" + rect +
-                '}';
     }
 
     public Group getGroup() {

@@ -4,7 +4,9 @@ import com.zhuyida.tank.chainofresponsibility.BulletTankCollider;
 import com.zhuyida.tank.chainofresponsibility.BulletWallCollider;
 import com.zhuyida.tank.chainofresponsibility.Collider;
 import com.zhuyida.tank.chainofresponsibility.ColliderChain;
+import org.junit.jupiter.api.Assertions;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,12 +58,54 @@ public class TankFrame extends Frame {
     private class TankKeyListener extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            gm.getMyTank().keyPressed(e);
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_S) save();
+            else if (key == KeyEvent.VK_L) load();
+            else gm.getMyTank().keyPressed(e);
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
             gm.getMyTank().keyReleased(e);
+        }
+    }
+
+    private void save() {
+        ObjectOutputStream oos = null;
+        try {
+            File f = new File("C:/test/tank.dat");
+            FileOutputStream fos = new FileOutputStream(f);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(gm);
+            oos.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (oos != null)
+                    oos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void load() {
+        ObjectInputStream ois = null;
+        try {
+            File f = new File("C:/test/tank.dat");
+            FileInputStream fis = new FileInputStream(f);
+            ois = new ObjectInputStream(fis);
+            this.gm = (GameModel) (ois.readObject());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ois != null)
+                    ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

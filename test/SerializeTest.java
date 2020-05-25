@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -33,7 +34,10 @@ public class SerializeTest {
             ObjectInputStream ois = new ObjectInputStream(fis);
             T t = (T)(ois.readObject());
 
-            System.out.println(t.m + " " + t.n);
+            Assertions.assertEquals(4, t.m);
+            Assertions.assertEquals(0, t.n);
+            Assertions.assertEquals(3, t.apple.weight);
+
             ois.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,5 +48,10 @@ public class SerializeTest {
 
 class T implements Serializable {
     int m = 4;
-    int n = 8;
+    transient int n = 8;
+    Apple apple = new Apple();
+}
+
+class Apple implements Serializable {
+    int weight = 3;
 }

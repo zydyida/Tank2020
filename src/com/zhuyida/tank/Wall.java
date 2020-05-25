@@ -36,14 +36,4 @@ public class Wall extends AbstractGameObject {
         return rect;
     }
 
-    @Override
-    public String toString() {
-        return "Wall{" +
-                "x=" + x +
-                ", y=" + y +
-                ", w=" + w +
-                ", h=" + h +
-                ", rect=" + rect +
-                '}';
-    }
 }
