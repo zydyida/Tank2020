@@ -1,4 +1,4 @@
-package com.zhuyida.net.callable;
+package com.zhuyida.callable;
 
 import java.util.concurrent.Callable;
 
