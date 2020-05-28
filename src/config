@@ -2,8 +2,8 @@
 Title=Tank War
 FrameWidth=800
 FrameHeight=600
-initTankCount=5
+initTankCount=0
 
 # tank fire strategy
-tankFireStrategy=FourDirFireStrategy
+tankFireStrategy=DefaultFireStrategy
 colliders=BulletTankCollider,BulletWallCollider,TankWallCollider,TankTankCollider
