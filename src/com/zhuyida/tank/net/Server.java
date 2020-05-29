@@ -32,13 +32,14 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline()
+
                                     .addLast(new ServerChildHandler());
                         }
                     })
                     .bind(8888)
                     .sync();
 
-            ServerFrame.INSTANCE.updateServerMsg("server started:");
+            ServerFrame.INSTANCE.updateServerMsg("server started!");
 
             future.channel().closeFuture().sync();
         } catch (Exception e) {
@@ -49,7 +50,9 @@ public class Server {
         }
     }
 
+
     class ServerChildHandler extends ChannelInboundHandlerAdapter {
+
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             clients.add(ctx.channel());
@@ -57,7 +60,6 @@ public class Server {
 
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            /*TankMsg tm = (TankMsg)msg;*/
             ServerFrame.INSTANCE.updateClientMsg(msg.toString());
 
             clients.writeAndFlush(msg);
@@ -70,6 +72,6 @@ public class Server {
             ctx.close();
         }
     }
-}
 
+}
 

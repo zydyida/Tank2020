@@ -2,12 +2,7 @@ package com.zhuyida.tank;
 
 import com.zhuyida.tank.net.TankJoinMsg;
 
-import javax.imageio.ImageIO;
-import javax.print.DocFlavor;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.BitSet;
 import java.util.Random;
 import java.util.UUID;
@@ -25,7 +20,6 @@ public class Tank extends AbstractGameObject {
     private int oldX, oldY;
     private Rectangle rect;
     private Random r = new Random();
-
     public Tank(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
@@ -40,24 +34,41 @@ public class Tank extends AbstractGameObject {
 
         this.rect = new Rectangle(x, y, width, height);
     }
-
     public Tank(TankJoinMsg msg) {
         this.x = msg.getX();
         this.y = msg.getY();
         this.dir = msg.getDir();
         this.moving = msg.isMoving();
         this.group = msg.getGroup();
-        this.id = this.getId();
+        this.id = msg.getId();
+
+        oldX = x;
+        oldY = y;
+
+        this.width = ResourceMgr.goodTankU.getWidth();
+        this.height = ResourceMgr.goodTankU.getHeight();
 
         this.rect = new Rectangle(x, y, width, height);
     }
 
-    public int getX() {
-        return x;
+    public void setDir(Dir dir) {
+        this.dir = dir;
     }
 
-    public int getY() {
-        return y;
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public boolean isLive() {
@@ -68,40 +79,44 @@ public class Tank extends AbstractGameObject {
         this.live = live;
     }
 
-    public Group getGroup() {
-        return group;
+    public int getX() {
+        return x;
     }
 
-    public UUID getId() {
-        return id;
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void paint(Graphics g) {
+
         if (!this.isLive()) return;
 
         switch (dir) {
             case L:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankL:ResourceMgr.goodTankL, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankL:ResourceMgr.goodTankL, x, y, null);
                 break;
             case U:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankU:ResourceMgr.goodTankU, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankU:ResourceMgr.goodTankU, x, y, null);
                 break;
             case R:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankR:ResourceMgr.goodTankR, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankR:ResourceMgr.goodTankR, x, y, null);
                 break;
             case D:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
                 break;
-
         }
         move();
-
         //update rect
         rect.x = x;
         rect.y = y;
-
-//        if (r.nextInt(100) > 90)
-//            fire();
     }
 
     private void move() {
@@ -109,6 +124,10 @@ public class Tank extends AbstractGameObject {
 
         oldX = x;
         oldY = y;
+
+
+
+
 
         switch (dir) {
             case L:
@@ -127,7 +146,10 @@ public class Tank extends AbstractGameObject {
 
         boundsCheck();
 
-        randomDir();
+        //randomDir();
+
+//        if (r.nextInt(100) > 90)
+//            fire();
     }
 
     private void randomDir() {
@@ -136,7 +158,7 @@ public class Tank extends AbstractGameObject {
     }
 
     private void boundsCheck() {
-        if (x < 0 || y < 30 || x + width > TankFrame.FRAME_WIDTH || y + height > TankFrame.FRAME_HEIGHT) {
+        if (x < 0 || y < 30 || x + width > TankFrame.GAME_WIDTH || y + height > TankFrame.GAME_HEIGHT) {
             this.back();
         }
     }
@@ -154,16 +176,19 @@ public class Tank extends AbstractGameObject {
         int bX = x + width / 2 - Bullet.W / 2;
         int bY = y + height / 2 - Bullet.H / 2;
 
-        TankFrame.INSTANCE.getGm().add(new Bullet(bX, bY, dir, group));
+
+        TankFrame.INSTANCE.getGm().add(new Bullet(this.id, bX, bY, dir, group));
     }
 
     public void die() {
         this.setLive(false);
+
         TankFrame.INSTANCE.getGm().add(new Explode(x, y));
+
+
     }
 
     public Rectangle getRect() {
         return rect;
     }
 }
-

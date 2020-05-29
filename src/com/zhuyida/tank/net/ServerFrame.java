@@ -13,6 +13,7 @@ public class ServerFrame extends Frame {
     private Server server = new Server();
 
     public ServerFrame() {
+
         this.setTitle("tank server");
         this.setSize(800, 600);
         this.setLocation(300, 30);

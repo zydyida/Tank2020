@@ -18,14 +18,15 @@ public class Client {
 
     public static final Client INSTANCE = new Client();
 
+
+
     private Channel channel = null;
 
     private Client() {}
 
-    public void connect() {
+    public void connect(){
         EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         Bootstrap b = new Bootstrap();
-
         try {
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
@@ -55,26 +56,23 @@ public class Client {
 
     }
 
-    public void send(TankJoinMsg msg) {
-        channel.writeAndFlush(msg);
-    }
-
     public void closeConnection() {
 
         channel.close();
     }
 
-    static class MyHandler extends SimpleChannelInboundHandler<TankJoinMsg> {
+    public void send(Msg msg) {
+        channel.writeAndFlush(msg);
+    }
+
+    static class MyHandler extends SimpleChannelInboundHandler<Msg> {
+
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getGm().getMyTank()));
         }
 
-        @Override
-        protected void channelRead0(ChannelHandlerContext channelHandlerContext, TankJoinMsg msg) throws Exception {
-            System.out.println(msg);
-            msg.handle();
-        }
+
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -82,11 +80,16 @@ public class Client {
             ctx.close();
         }
 
+
+        @Override
+        protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+            System.out.println(msg);
+            msg.handle();
+        }
     }
 
     public static void main(String[] args) {
         Client c = new Client();
         c.connect();
     }
-
 }

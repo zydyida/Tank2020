@@ -1,13 +1,13 @@
 package com.zhuyida.tank;
 
-import com.zhuyida.tank.strategy.DefaultFireStrategy;
+import com.zhuyida.tank.net.BulletNewMsg;
+import com.zhuyida.tank.net.Client;
+import com.zhuyida.tank.net.TankMoveOrDirChangeMsg;
+import com.zhuyida.tank.net.TankStopMsg;
 import com.zhuyida.tank.strategy.FireStrategy;
-import com.zhuyida.tank.strategy.FourDirFireStrategy;
-import com.zhuyida.tank.strategy.LeftRightFireStrategy;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class Player extends AbstractGameObject {
@@ -19,6 +19,7 @@ public class Player extends AbstractGameObject {
     private Group group;
     private boolean live = true;
     private UUID id = UUID.randomUUID();
+    private FireStrategy strategy = null;
 
     public Player(int x, int y, Dir dir, Group group) {
         this.x = x;
@@ -30,12 +31,28 @@ public class Player extends AbstractGameObject {
         this.initFireStrategy();
     }
 
-    public int getX() {
-        return x;
+    public UUID getId() {
+        return id;
     }
 
-    public int getY() {
-        return y;
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public Dir getDir() {
+        return dir;
+    }
+
+    public void setDir(Dir dir) {
+        this.dir = dir;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public boolean isLive() {
@@ -46,24 +63,26 @@ public class Player extends AbstractGameObject {
         this.live = live;
     }
 
-    public Dir getDir() {
-        return dir;
+    public int getX() {
+        return x;
     }
 
-    public boolean isMoving() {
-        return moving;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public Group getGroup() {
-        return group;
+    public int getY() {
+        return y;
     }
 
-    public UUID getId() {
-        return id;
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void paint(Graphics g) {
+
         if (!this.isLive()) return;
+
 
         Color c = g.getColor();
         g.setColor(Color.yellow);
@@ -73,19 +92,19 @@ public class Player extends AbstractGameObject {
 
         switch (dir) {
             case L:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankL:ResourceMgr.goodTankL, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankL:ResourceMgr.goodTankL, x, y, null);
                 break;
             case U:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankU:ResourceMgr.goodTankU, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankU:ResourceMgr.goodTankU, x, y, null);
                 break;
             case R:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankR:ResourceMgr.goodTankR, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankR:ResourceMgr.goodTankR, x, y, null);
                 break;
             case D:
-                g.drawImage(this.group.equals(Group.BAD)?ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
+                g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
                 break;
-
         }
+
 
         move();
     }
@@ -93,16 +112,16 @@ public class Player extends AbstractGameObject {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         switch (key) {
-            case KeyEvent.VK_LEFT :
+            case KeyEvent.VK_LEFT:
                 bL = true;
                 break;
-            case KeyEvent.VK_UP :
+            case KeyEvent.VK_UP:
                 bU = true;
                 break;
-            case KeyEvent.VK_RIGHT :
+            case KeyEvent.VK_RIGHT:
                 bR = true;
                 break;
-            case KeyEvent.VK_DOWN :
+            case KeyEvent.VK_DOWN:
                 bD = true;
                 break;
         }
@@ -112,24 +131,35 @@ public class Player extends AbstractGameObject {
     }
 
     private void setMainDir() {
-        // all dir key are released , tank should stop.
-        if(!bL && !bU && !bR && !bD)
-            moving = false;
 
-        // any dir key is pressed, tank should stop.
+        boolean oldMoving = moving;
+        Dir oldDir = this.getDir();
+
+        //all dir keys are released , tank should be stop.
+        if (!bL && !bU && !bR && !bD) {
+            moving = false;
+            //send stop msg
+            Client.INSTANCE.send(new TankStopMsg(this.id, this.x, this.y));
+        }
+            //any dir key is pressed, tank should be moving.
         else {
             moving = true;
 
-            if(bL && !bU && !bR && !bD)
+            if (bL && !bU && !bR && !bD)
                 dir = Dir.L;
-            if(!bL && bU && !bR && !bD)
+            if (!bL && bU && !bR && !bD)
                 dir = Dir.U;
-            if(!bL && !bU && bR && !bD)
+            if (!bL && !bU && bR && !bD)
                 dir = Dir.R;
-            if(!bL && !bU && !bR && bD)
+            if (!bL && !bU && !bR && bD)
                 dir = Dir.D;
-        }
 
+            //old status is not moving , now my tank will move immediate
+            if(!oldMoving)
+                Client.INSTANCE.send(new TankMoveOrDirChangeMsg(this.id, this.x, this.y, this.dir));
+            if(!this.dir.equals(oldDir))
+                Client.INSTANCE.send(new TankMoveOrDirChangeMsg(this.id, this.x, this.y, this.dir));
+        }
     }
 
     private void move() {
@@ -154,16 +184,16 @@ public class Player extends AbstractGameObject {
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
         switch (key) {
-            case KeyEvent.VK_LEFT :
+            case KeyEvent.VK_LEFT:
                 bL = false;
                 break;
-            case KeyEvent.VK_UP :
+            case KeyEvent.VK_UP:
                 bU = false;
                 break;
-            case KeyEvent.VK_RIGHT :
+            case KeyEvent.VK_RIGHT:
                 bR = false;
                 break;
-            case KeyEvent.VK_DOWN :
+            case KeyEvent.VK_DOWN:
                 bD = false;
                 break;
             case KeyEvent.VK_CONTROL:
@@ -174,24 +204,30 @@ public class Player extends AbstractGameObject {
         setMainDir();
     }
 
-    private FireStrategy strategy = null;
+    private void initFireStrategy() {
 
-    public void initFireStrategy() {
         String className = PropertyMgr.get("tankFireStrategy");
         try {
             Class clazz = Class.forName("com.zhuyida.tank.strategy." + className);
-            strategy = (FireStrategy)(clazz.getDeclaredConstructor().newInstance());
+            strategy = (FireStrategy) (clazz.getDeclaredConstructor().newInstance());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void fire() {
+        //read config
+        //if default four dir two
+        //ClassLoader loader = Player.class.getClassLoader();
+
+
         strategy.fire(this);
+
+
     }
 
     public void die() {
         this.setLive(false);
+        TankFrame.INSTANCE.getGm().add(new Explode(x, y));
     }
 }
-

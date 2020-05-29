@@ -3,7 +3,8 @@ package com.zhuyida.tank;
 import java.util.Random;
 
 public enum Dir {
-    //public static final int L;编译器指定
+    //public static final com.mashibing.tank.Dir L;
+
     L, U, R, D;
 
     private static Random r = new Random();
@@ -13,4 +14,4 @@ public enum Dir {
     }
 }
 
-//int dir = 1, 2, 3, 4  dir = 5
+//int dir = 1, 2, 3, 4 dir = 5;
