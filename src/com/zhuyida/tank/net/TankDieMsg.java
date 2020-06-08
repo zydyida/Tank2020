@@ -84,9 +84,6 @@ public class TankDieMsg extends Msg {
         try {
             this.bulletId = new UUID(dis.readLong(), dis.readLong());
             this.id = new UUID(dis.readLong(), dis.readLong());
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

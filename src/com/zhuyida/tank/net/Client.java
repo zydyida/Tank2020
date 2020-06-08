@@ -18,8 +18,6 @@ public class Client {
 
     public static final Client INSTANCE = new Client();
 
-
-
     private Channel channel = null;
 
     private Client() {}
@@ -57,7 +55,6 @@ public class Client {
     }
 
     public void closeConnection() {
-
         channel.close();
     }
 
@@ -72,14 +69,11 @@ public class Client {
             ctx.writeAndFlush(new TankJoinMsg(TankFrame.INSTANCE.getGm().getMyTank()));
         }
 
-
-
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             cause.printStackTrace();
             ctx.close();
         }
-
 
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {

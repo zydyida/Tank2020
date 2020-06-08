@@ -7,7 +7,10 @@ import com.zhuyida.tank.TankFrame;
 import java.io.*;
 import java.util.UUID;
 
-public class TankStopMsg extends Msg {
+public class
+
+
+TankStopMsg extends Msg {
     private UUID id;
     private int x, y;
 

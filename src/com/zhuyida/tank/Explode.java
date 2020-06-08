@@ -3,7 +3,6 @@ package com.zhuyida.tank;
 import java.awt.*;
 
 public class Explode extends AbstractGameObject {
-
     private int x, y;
     private int width, height;
     private int step = 0;
@@ -28,7 +27,6 @@ public class Explode extends AbstractGameObject {
     }
 
     public void paint(Graphics g) {
-
         if(!live) return;
 
         g.drawImage(ResourceMgr.explodes[step], x, y, null);
@@ -38,12 +36,9 @@ public class Explode extends AbstractGameObject {
             this.die();
         }
 
-
     }
 
     private void die() {
         this.live = false;
     }
-
-
 }

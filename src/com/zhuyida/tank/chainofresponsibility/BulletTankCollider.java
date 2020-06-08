@@ -4,6 +4,8 @@ import com.zhuyida.tank.AbstractGameObject;
 import com.zhuyida.tank.Bullet;
 import com.zhuyida.tank.ResourceMgr;
 import com.zhuyida.tank.Tank;
+import com.zhuyida.tank.net.Client;
+import com.zhuyida.tank.net.TankDieMsg;
 
 import java.awt.*;
 
@@ -23,6 +25,9 @@ public class BulletTankCollider implements Collider {
             if (b.getRect().intersects(rectTank)) {
                 b.die();
                 t.die();
+
+                Client.INSTANCE.send(new TankDieMsg(t.getId(), b.getId()));
+
                 return false;
             }
         } else if (go1 instanceof Tank && go2 instanceof Bullet) {

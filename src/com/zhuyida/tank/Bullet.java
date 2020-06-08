@@ -68,8 +68,6 @@ public class Bullet extends AbstractGameObject {
         this.group = group;
 
         rect = new Rectangle(x, y, w, h);
-
-
     }
 
     public boolean isLive() {
@@ -96,17 +94,11 @@ public class Bullet extends AbstractGameObject {
                 break;
         }
 
-
         move();
 
         //update the rect
         rect.x = x;
         rect.y = y;
-
-       /* Color old = g.getColor();
-        g.setColor(Color.YELLOW);
-        g.drawRect(rect.x, rect.y, rect.width, rect.height);
-        g.setColor(old);*/
     }
 
     private void move() {
@@ -128,8 +120,6 @@ public class Bullet extends AbstractGameObject {
 
         boundsCheck();
     }
-
-
 
     public Rectangle getRect() {
         return rect;

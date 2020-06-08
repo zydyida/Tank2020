@@ -125,10 +125,6 @@ public class Tank extends AbstractGameObject {
         oldX = x;
         oldY = y;
 
-
-
-
-
         switch (dir) {
             case L:
                 x -= SPEED;
@@ -145,11 +141,6 @@ public class Tank extends AbstractGameObject {
         }
 
         boundsCheck();
-
-        //randomDir();
-
-//        if (r.nextInt(100) > 90)
-//            fire();
     }
 
     private void randomDir() {
@@ -184,8 +175,6 @@ public class Tank extends AbstractGameObject {
         this.setLive(false);
 
         TankFrame.INSTANCE.getGm().add(new Explode(x, y));
-
-
     }
 
     public Rectangle getRect() {

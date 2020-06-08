@@ -80,15 +80,12 @@ public class Player extends AbstractGameObject {
     }
 
     public void paint(Graphics g) {
-
         if (!this.isLive()) return;
-
 
         Color c = g.getColor();
         g.setColor(Color.yellow);
         g.drawString(id.toString(), x, y-10);
         g.setColor(c);
-
 
         switch (dir) {
             case L:
@@ -104,7 +101,6 @@ public class Player extends AbstractGameObject {
                 g.drawImage(this.group.equals(Group.BAD)? ResourceMgr.badTankD:ResourceMgr.goodTankD, x, y, null);
                 break;
         }
-
 
         move();
     }
@@ -126,8 +122,8 @@ public class Player extends AbstractGameObject {
                 break;
         }
 
-        setMainDir();
-
+        if (live)
+            setMainDir();
     }
 
     private void setMainDir() {
@@ -201,7 +197,8 @@ public class Player extends AbstractGameObject {
                 break;
         }
 
-        setMainDir();
+        if (live)
+            setMainDir();
     }
 
     private void initFireStrategy() {
@@ -219,11 +216,8 @@ public class Player extends AbstractGameObject {
         //read config
         //if default four dir two
         //ClassLoader loader = Player.class.getClassLoader();
-
-
-        strategy.fire(this);
-
-
+        if(live)
+            strategy.fire(this);
     }
 
     public void die() {

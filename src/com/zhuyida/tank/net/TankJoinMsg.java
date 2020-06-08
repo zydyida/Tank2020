@@ -16,8 +16,6 @@ public class TankJoinMsg extends Msg {
     public TankJoinMsg() {
     }
 
-
-
     public TankJoinMsg(Player p) {
         this.x = p.getX();
         this.y = p.getY();

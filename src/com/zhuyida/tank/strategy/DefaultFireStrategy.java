@@ -18,7 +18,5 @@ public class DefaultFireStrategy implements FireStrategy {
 
         //send a bullet msg to server when a bullet is born.
         Client.INSTANCE.send(new BulletNewMsg(b));
-
-
     }
 }
